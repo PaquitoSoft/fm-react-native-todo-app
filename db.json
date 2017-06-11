@@ -1,0 +1,40 @@
+{
+  "todos": [
+    {
+      "name": "rule the world",
+      "id": 1
+    },
+    {
+      "name": "sheah!",
+      "id": 2
+    },
+    {
+      "name": "eat pizza",
+      "id": 3
+    },
+    {
+      "name": "learn react native",
+      "id": 4
+    },
+    {
+      "name": "always win",
+      "id": 5
+    },
+    {
+      "name": "play badminton",
+      "id": 6
+    },
+    {
+      "name": "show the money",
+      "id": 7
+    },
+    {
+      "name": "finish todo app",
+      "id": 8
+    },
+    {
+      "name": "fix errors",
+      "id": 9
+    }
+  ]
+}

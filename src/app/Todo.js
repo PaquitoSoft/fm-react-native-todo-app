@@ -8,6 +8,8 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+const SERVER_BASE_URL = 'http://DESKTOP-AE9FRO4:3000/todos';
+
 class Todo extends React.Component {
   constructor() {
     super();
@@ -17,6 +19,22 @@ class Todo extends React.Component {
     };
   }
   
+  componentWillMount() {
+    fetch(SERVER_BASE_URL, {
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(todos => {
+        this.setState({ todos })
+      })
+      .catch(err => {
+        console.error('Error fetching todos from server: ' + err.message);
+        console.warn(err);
+      });
+  }
+
   handleChange(text) {
     this.setState({
       newTodo: text
@@ -24,24 +42,42 @@ class Todo extends React.Component {
   }
 
   handlePress() {
-    const todos = [...this.state.todos, this.state.newTodo];
-    this.setState({
-      todos,
-      newTodo: ''
-    });
+    fetch(SERVER_BASE_URL, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: this.state.newTodo
+      })
+    })
+    .then(res => res.json())
+    .then(newTodo => {
+      const todos = [newTodo, ...this.state.todos];
+      this.setState({
+        todos,
+        newTodo: ''
+      });
+    })
   }
 
   render() {
-    console.log(this.state.newTodo);
     return (
-      <View>
-        <TextInput value={this.state.newTodo} onChangeText={this.handleChange.bind(this)} />
-        <TouchableOpacity onPress={this.handlePress.bind(this)}>
-          <Text>Add Todo</Text>
-        </TouchableOpacity>
-        <View>
+      <View style={styles.container}>
+        <View style={styles.form}>
+          <TextInput 
+            style={styles.input}
+            value={this.state.newTodo} 
+            onChangeText={this.handleChange.bind(this)} />
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={this.handlePress.bind(this)}>
+            <Text>Add Todo</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.todos}>
           {this.state.todos.map((todo, index) => {
-            return (<Text key={index}>{index + 1}. {todo}</Text>);
+            return (<Text key={index} style={styles.todo}>{index + 1}. {todo.name}</Text>);
           })}
         </View>
       </View>
@@ -52,20 +88,33 @@ class Todo extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 25
+  },
+  form: {
+    flexDirection: 'row'
+  },
+  input: {
+    flex: 0.7,
+    fontSize: 24
+  },
+  button: {
+    flex: 0.3,
+    borderWidth: 1,
+    borderColor: 'blue',
+    height: 50,
+    borderRadius: 3,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    alignItems: 'center'
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  todos: {
+    marginTop: 50
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  todo: {
+    borderBottomWidth: 1,
+    borderColor: 'lightgrey',
+    fontSize: 18,
+    marginBottom: 10
+  }
 });
 
 export default Todo;
