@@ -3,8 +3,9 @@ import {
     View,
     Text
 } from 'react-native';
+import { connect } from 'react-redux';
 
-export default class Reddit extends React.Component {
+class Reddit extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -36,3 +37,26 @@ export default class Reddit extends React.Component {
         );
     }
 };
+
+function _Reddit({ posts }) {
+    return (
+        <View>
+            <Text>Reddit Component</Text>
+            <View>
+                {posts.map((post, index) => {
+                    return (
+                        <Text key={index}>{post.data.author}</Text>
+                    );
+                })}
+            </View>
+        </View>
+    );
+}
+
+function mapStateToProps(state) {
+    return {
+        posts: state.reddit
+    };
+}
+
+export default connect(mapStateToProps)(_Reddit);
